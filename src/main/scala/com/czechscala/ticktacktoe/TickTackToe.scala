@@ -8,25 +8,26 @@ object TickTackToe {
   case object O extends Symbol
 
   type Cell = Option[Symbol]
+  type Coordinate = (Int, Int)
 
   case class Position(player: Symbol, private val cells: IndexedSeq[Cell]) {
     require(cells.size == 9)
 
-    lazy val board: Map[(Int, Int), Cell] = (for {
+    lazy val board: Map[Coordinate, Cell] = (for {
       x <- 1 to 3
       y <- 1 to 3
     } yield
       (x, y) -> cells(index(x, y))
     ).toMap
 
-    private def index(x: Int, y: Int) = (x - 1) * 3 + (y - 1)
+    private def index(c: Coordinate) = (c._1 - 1) * 3 + (c._2 - 1)
 
-    def play(x: Int, y: Int): Position = {
+    def play(coordinate: Coordinate): Position = {
       require(!isTerminal)
-      require(board(x, y).isEmpty)
+      require(board(coordinate).isEmpty)
 
       val symbol = Some(player)
-      Position(opponent, cells updated (index(x, y), symbol))
+      Position(opponent, cells updated (index(coordinate), symbol))
     }
 
     def isTerminal: Boolean = {
