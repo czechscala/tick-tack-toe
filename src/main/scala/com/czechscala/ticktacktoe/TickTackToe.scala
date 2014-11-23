@@ -22,6 +22,23 @@ object TickTackToe {
 
     private def index(c: Coordinate) = (c._1 - 1) * 3 + (c._2 - 1)
 
+    lazy val winner: Option[Symbol] = {
+      type Line = Set[Cell]
+
+      def row(x: Int)(y: Int) = board(x, y)
+      def column(y: Int)(x: Int) = board(x, y)
+      def mainDiagonal(i: Int) = board(i, i)
+      def minorDiagonal(i: Int) = board(4 - i, i)
+
+      def line(cell: Int => Cell): Line = (1 to 3 map cell).toSet
+      def lines(genLines: Int => Int => Cell)(indexes: Seq[Int]): Seq[Line] = indexes map genLines map line
+
+      val allLines: Seq[Line] = lines(row)(1 to 3) ++ lines(column)(1 to 3) :+ line(mainDiagonal) :+ line(minorDiagonal)
+      val winningLine: Option[Line] = allLines find { line => line.size == 1 && line.head.nonEmpty }
+
+      winningLine map (_.head.get)
+    }
+
     def play(coordinate: Coordinate): Position = {
       require(!isTerminal)
       require(board(coordinate).isEmpty)
@@ -30,20 +47,7 @@ object TickTackToe {
       Position(opponent, cells updated (index(coordinate), symbol))
     }
 
-    def isTerminal: Boolean = {
-      def row(x: Int)(y: Int) = board(x, y)
-      def column(y: Int)(x: Int) = board(x, y)
-      def mainDiagonal(i: Int) = board(i, i)
-      def minorDiagonal(i: Int) = board(4 - i, i)
-
-      def line(cell: Int => Cell): Set[Cell] = (1 to 3 map cell).toSet
-      def lines(genLines: Int => Int => Cell)(indexes: Seq[Int]): Seq[Set[Cell]] = indexes map genLines map line
-
-      val allLines: Seq[Set[Cell]] = lines(row)(1 to 3) ++ lines(column)(1 to 3) :+ line(mainDiagonal) :+ line(minorDiagonal)
-      val winningLine = allLines find { line => line.size == 1 && line.head.nonEmpty }
-
-      winningLine.nonEmpty
-    }
+    def isTerminal: Boolean = cells.forall(_.nonEmpty) || winner.nonEmpty
 
     def opponent = if (player == X) O else X
   }

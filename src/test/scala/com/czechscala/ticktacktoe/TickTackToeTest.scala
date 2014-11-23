@@ -55,9 +55,9 @@ class TickTackToeTest extends FunSuite with Matchers with TableDrivenPropertyChe
 
   test("isTerminal") {
     val terminalPositions = opticallyMesh(
-      List("XXX",  "...",  "...",  "O..",  ".X.",  "..O",  "X..",  "..O"),
-      List("...",  "OOO",  "...",  "O..",  ".X.",  "..O",  ".X.",  ".O."),
-      List("...",  "...",  "XXX",  "O..",  ".X.",  "..O",  "..X",  "O.."))
+      List("XXX",  "...",  "...",  "O..",  ".X.",  "..O",  "X..",  "..O", "XOX"),
+      List("...",  "OOO",  "...",  "O..",  ".X.",  "..O",  ".X.",  ".O.", "XOX"),
+      List("...",  "...",  "XXX",  "O..",  ".X.",  "..O",  "..X",  "O..", "OXO"))
 
     terminalPositions foreach { _.isTerminal should be (true) }
 
@@ -67,6 +67,22 @@ class TickTackToeTest extends FunSuite with Matchers with TableDrivenPropertyChe
       List("...",  "...",  "X.X",  "...",  "X.X",  "...",  "...",  "X.."))
 
     nonTerminalPositions foreach { _.isTerminal should be (false) }
+  }
+
+  test("winner") {
+    val winningPositions = opticallyMesh(
+      List("XXX",  "OOX",  "..X"),
+      List(".O.",  "OOX",  ".X."),
+      List("O..",  "..X",  "XOX"))
+
+    winningPositions foreach { _.winner should be (Some(X)) }
+
+    val nonWinningPositions = opticallyMesh(
+      List("XOX",  "OOX"),
+      List(".O.",  "OXO"),
+      List("O..",  "..X"))
+
+    nonWinningPositions foreach { _.winner should be (None) }
   }
 
   /** Helper function to instantiate multiple positions written "next to each other" to save rows. */
