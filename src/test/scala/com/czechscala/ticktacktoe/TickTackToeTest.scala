@@ -56,14 +56,14 @@ class TickTackToeTest extends FunSuite with Matchers with TableDrivenPropertyChe
   import Util.opticallyMesh
 
   test("isTerminal") {
-    val terminalPositions = opticallyMesh(
+    val terminalPositions = opticallyMesh(X)(
       List("XXX",  "...",  "...",  "O..",  ".X.",  "..O",  "X..",  "..O", "XOX"),
       List("...",  "OOO",  "...",  "O..",  ".X.",  "..O",  ".X.",  ".O.", "XOX"),
       List("...",  "...",  "XXX",  "O..",  ".X.",  "..O",  "..X",  "O..", "OXO"))
 
     terminalPositions foreach { _.isTerminal should be (true) }
 
-    val nonTerminalPositions = opticallyMesh(
+    val nonTerminalPositions = opticallyMesh(X)(
       List("XOX",  ".O.",  "O..",  "O..",  "X.X",  "...",  "X..",  "..O"),
       List("...",  "O.O",  "O..",  "O..",  ".O.",  "...",  ".X.",  ".O."),
       List("...",  "...",  "X.X",  "...",  "X.X",  "...",  "...",  "X.."))
@@ -72,14 +72,14 @@ class TickTackToeTest extends FunSuite with Matchers with TableDrivenPropertyChe
   }
 
   test("winner") {
-    val winningPositions = opticallyMesh(
+    val winningPositions = opticallyMesh(X)(
       List("XXX",  "OOX",  "..X"),
       List(".O.",  "OOX",  ".X."),
       List("O..",  "..X",  "XOX"))
 
     winningPositions foreach { _.winner should be (Some(X)) }
 
-    val nonWinningPositions = opticallyMesh(
+    val nonWinningPositions = opticallyMesh(X)(
       List("XOX",  "OOX"),
       List(".O.",  "OXO"),
       List("O..",  "..X"))
@@ -88,7 +88,7 @@ class TickTackToeTest extends FunSuite with Matchers with TableDrivenPropertyChe
   }
 
   test("opticallyMesh") {
-    val positions = opticallyMesh(
+    val positions = opticallyMesh(X)(
       List("XXX",  "..."),
       List("...",  "OOO"),
       List("...",  "..."))
