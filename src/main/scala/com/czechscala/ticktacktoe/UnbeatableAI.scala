@@ -10,13 +10,21 @@ object UnbeatableAI extends Player {
     symbols.count { _ == Some(symbol) } == 2 && symbols.contains(None)
   }
 
-
-  def move(position: Position): Option[(Int, Int)] = {
-    val winningLine: Option[Line] = position.allLines find hasOnlyTwoSymbols(position.player)
+  def findWinningMoveBy(player: Mark)(position: Position): Option[Coordinate] = {
+    val winningLine = position.allLines find hasOnlyTwoSymbols(player)
 
     (for {
       line: Line <- winningLine.toSeq
       (coordinate, None) <- line
     } yield coordinate).headOption
+  }
+
+  type Rule = Position => Option[Coordinate]
+
+  def move(position: Position): Option[Coordinate] = {
+    List[Rule](
+      findWinningMoveBy(position.player),
+      findWinningMoveBy(position.opponent)
+    ).view.map(_(position)).find(_.nonEmpty).flatten
   }
 }

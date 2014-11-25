@@ -8,10 +8,22 @@ class UnbeatableAITest extends FlatSpec with Matchers {
   val ai = UnbeatableAI
 
   "Unbeatable AI's next move" should "win the game if there is line with two symbols" in {
-    val tests = Util.opticallyMesh(
+    val tests = Util.opticallyMesh(X)(
       List("X..",  ".OO",  "X.."),
       List("X..",  "...",  "O.."),
       List(".O.",  "X.X",  "..X")).zip(
+      List((3, 1), (3, 2), (2, 2)))
+
+    tests foreach { case (position, expectedCoordinate) =>
+      ai.move(position) should be (Some(expectedCoordinate))
+    }
+  }
+
+  it should "block the opponent if he has line with two its symbols" in {
+    val tests = Util.opticallyMesh(X)(
+      List("O..",  "..X",  "O.."),
+      List("O..",  "...",  "X.."),
+      List(".X.",  "O.O",  "..O")).zip(
       List((3, 1), (3, 2), (2, 2)))
 
     tests foreach { case (position, expectedCoordinate) =>
