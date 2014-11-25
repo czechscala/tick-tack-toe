@@ -23,18 +23,21 @@ object TickTackToe {
     private def index(c: Coordinate) = (c._1 - 1) * 3 + (c._2 - 1)
 
     lazy val winner: Option[Mark] = {
-      type Line = Set[Cell]
+      type Line = Seq[Cell]
 
       def row(x: Int)(y: Int) = board(x, y)
       def column(y: Int)(x: Int) = board(x, y)
       def mainDiagonal(i: Int) = board(i, i)
       def minorDiagonal(i: Int) = board(4 - i, i)
 
-      def line(cell: Int => Cell): Line = (1 to 3 map cell).toSet
+      def line(cell: Int => Cell): Line = 1 to 3 map cell
       def lines(genLines: Int => Int => Cell)(indexes: Seq[Int]): Seq[Line] = indexes map genLines map line
 
       val allLines: Seq[Line] = lines(row)(1 to 3) ++ lines(column)(1 to 3) :+ line(mainDiagonal) :+ line(minorDiagonal)
-      val winningLine: Option[Line] = allLines find { line => line.size == 1 && line.head.nonEmpty }
+
+      def hasAllSymbolsSame(line: Line) = line.toSet.size == 1 && line.head.nonEmpty
+
+      val winningLine: Option[Line] = allLines find hasAllSymbolsSame
 
       winningLine map (_.head.get)
     }
