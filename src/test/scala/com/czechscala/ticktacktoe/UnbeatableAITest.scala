@@ -31,6 +31,18 @@ class UnbeatableAITest extends FlatSpec with Matchers {
     }
   }
 
+  it should "create an opportunity of two threats to win" in {
+    val tests = Util.opticallyMesh(X)(
+      List(".X.",  ".O.",  "..O"),
+      List("..O",  ".X.",  ".X."),
+      List("X..",  ".X.",  "X..")).zip(
+      List((1, 1), (3, 1), (1, 1)))
+
+    tests foreach { case (position, expectedCoordinate) =>
+      ai.move(position) should be (Some(expectedCoordinate))
+    }
+  }
+
   "hasOnlyTwoSymbols" should "" in {
     ai.hasOnlyTwoSymbols(X)(Seq(x(1, 1), n(1, 2), x(1, 3))) should be (true)
     ai.hasOnlyTwoSymbols(X)(Seq(o(1, 1), n(1, 2), o(1, 3))) should be (false)

@@ -19,12 +19,20 @@ object UnbeatableAI extends Player {
     } yield coordinate).headOption
   }
 
+  def findForkMove(position: Position): Option[Coordinate] = {
+    val cellsSortedByRows = position.board.toSeq sortBy { case (c, _) => c._1 * 3 + c._2 }
+    cellsSortedByRows find { case (coordinate, cell) =>
+      cell.isEmpty && position.play(coordinate).allLines.count(hasOnlyTwoSymbols(position.player)) >= 2
+    } map (_._1)
+  }
+
   type Rule = Position => Option[Coordinate]
 
   def move(position: Position): Option[Coordinate] = {
     List[Rule](
       findWinningMoveBy(position.player),
-      findWinningMoveBy(position.opponent)
+      findWinningMoveBy(position.opponent),
+      findForkMove
     ).view.map(_(position)).find(_.nonEmpty).flatten
   }
 }
