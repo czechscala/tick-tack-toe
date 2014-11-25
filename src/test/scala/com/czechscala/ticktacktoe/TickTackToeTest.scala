@@ -53,6 +53,8 @@ class TickTackToeTest extends FunSuite with Matchers with TableDrivenPropertyChe
     an[IllegalArgumentException] should be thrownBy { Position(X, "X........").play(1, 1) }
   }
 
+  import Util.opticallyMesh
+
   test("isTerminal") {
     val terminalPositions = opticallyMesh(
       List("XXX",  "...",  "...",  "O..",  ".X.",  "..O",  "X..",  "..O", "XOX"),
@@ -84,10 +86,6 @@ class TickTackToeTest extends FunSuite with Matchers with TableDrivenPropertyChe
 
     nonWinningPositions foreach { _.winner should be (None) }
   }
-
-  /** Helper function to instantiate multiple positions written "next to each other" to save rows. */
-  def opticallyMesh(firstRows: List[String], secondRows: List[String], thirdRows: List[String]) =
-    List(firstRows, secondRows, thirdRows).transpose map { rows => Position(X, rows.mkString) }
 
   test("opticallyMesh") {
     val positions = opticallyMesh(
