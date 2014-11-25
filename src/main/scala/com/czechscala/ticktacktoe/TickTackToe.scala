@@ -3,14 +3,14 @@ package com.czechscala.ticktacktoe
 
 object TickTackToe {
 
-  sealed trait Symbol
-  case object X extends Symbol
-  case object O extends Symbol
+  sealed trait Mark
+  case object X extends Mark
+  case object O extends Mark
 
-  type Cell = Option[Symbol]
+  type Cell = Option[Mark]
   type Coordinate = (Int, Int)
 
-  case class Position(player: Symbol, private val cells: IndexedSeq[Cell]) {
+  case class Position(player: Mark, private val cells: IndexedSeq[Cell]) {
     require(cells.size == 9)
 
     lazy val board: Map[Coordinate, Cell] = (for {
@@ -22,7 +22,7 @@ object TickTackToe {
 
     private def index(c: Coordinate) = (c._1 - 1) * 3 + (c._2 - 1)
 
-    lazy val winner: Option[Symbol] = {
+    lazy val winner: Option[Mark] = {
       type Line = Set[Cell]
 
       def row(x: Int)(y: Int) = board(x, y)
@@ -53,7 +53,7 @@ object TickTackToe {
   }
 
   object Position {
-    def apply(player: Symbol, symbols: String): Position = Position(player, symbols map {
+    def apply(player: Mark, symbols: String): Position = Position(player, symbols map {
       case 'X' => Some(X)
       case 'O' => Some(O)
       case _ => None
@@ -62,5 +62,5 @@ object TickTackToe {
 
   val EmptyGrid = Vector.fill(9)(None)
 
-  def newGame(player: Symbol = X) = Position(player, EmptyGrid)
+  def newGame(player: Mark = X) = Position(player, EmptyGrid)
 }
